@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Project | HRMS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center my-5">
+        Basic HRMS (Human Resource Management System)
+      </h2>
+    </div>
+
+    {% include 'leftPanel.html' %}
+
+    <div class="body-content">
+      <div class="container-fluid">
+        <div class="row ">
+            <h2>Employee details</h2>
+        </div>
+        <div class="row mt-3 ">
+            <div class="mb-1 px-5 py-3">
+              <label for="empid" class="form-label">Enter Employee ID</label>
+              <div class="input-group mb-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  min="1"
+                  placeholder=""
+                  id="empid"
+                  aria-describedby="button-addon2"
+                  required
+                />
+                <button
+                  class="btn btn-primary px-3"
+                  type="button"
+                  onclick="getEmployeeDetails()"
+                  id="button-addon2"
+                >
+                  Get Details
+                </button>
+              </div>
+            </div>
+        </div>
+        <div class="row mt-3" id="empbody">
+        </div>
+        <div class="row mt-3" >
+            <table class="table table-light table-hover border border-secondary text-center" id="empattendance">
+            </table>
+        </div>
+
+      </div>
+    </div>
+  </body>
+  <script>
+    document.getElementById("navEmployeeDetails").classList.add("active");
+  </script>
+
+  <script>
+    async function  getEmployeeDetails(){
+      const empid = parseInt(document.getElementById("empid").value);
+      const URL = `http://127.0.0.1:8000/getemployeedetails/${empid}`;
+      const response = await fetch(URL, {
+        method: "GET",
+      });
+      const result = await response.json();
+      console.log(result);
+      
+      if(result['error']){
+        alert(result['error']);
+      }
+      else{
+        const empbody=`<table class="table text-center">
+            <thead>
+              <th>Emp.Id</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Date of Joining</th>
+              <th>Attendance</th>
+            </thead>
+            <tbody>
+               <td>${result.id}</td> 
+               <td>${result.name}</td> 
+               <td>${result.email}</td> 
+               <td>${result.department}</td> 
+               <td>${result.designation}</td> 
+               <td>${result.doj}</td> 
+               <td><button class="btn btn-outline-success" onclick="viewAttendance(${result.attendance})">View Attendance</button></td> 
+            </tbody>
+          </table>`
+          document.getElementById('empbody').innerHTML=empbody;
+          document.getElementById('empattendance').innerHTML="";
+      }
+    }
+
+    async function viewAttendance(attendance){
+     console.log(attendance);
+     var attenhead=`<thead>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>Time Between</th>
+            </thead>`
+    var attenbody = ""
+     attendance.map((item)=>{
+        let diff=timeDifference(item.clockin,item.clockout)
+        attenbody+= ` <tr><td> ${item.clockin}</td> <td>${item.clockout}</td><td>${diff}</td><tr>`  
+     })
+     if(attenbody == ""){
+        attenbody = `<tr><td colspan="3"> No Records Available</td></tr>`
+     }
+     document.getElementById('empattendance').innerHTML=attenhead+attenbody;
+    }
+
+    function timeDifference(clockin,clockout){
+        const startDate = new Date(clockin);
+        const endDate = new Date(clockout);
+        const timeDifferenceInMilliseconds = endDate - startDate;
+        // console.log(timeDifferenceInMilliseconds)
+        const timeS=timeDifferenceInMilliseconds/1000;
+        let minutes = Math.floor(timeS/60);
+        const hours=Math.floor(minutes/60);
+        minutes = minutes - hours*60;
+        
+        const time=`${hours} H  ${minutes} M`;
+        return time  
+    }
+  </script>
+</html>

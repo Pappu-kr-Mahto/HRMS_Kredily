@@ -1,0 +1,231 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Project | HRMS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center my-5">
+        Basic HRMS (Human Resource Management System)
+      </h2>
+    </div>
+
+    {% include 'leftPanel.html' %}
+
+    <div class="body-content">
+      <div class="container-fluid">
+        <h2>Attendence</h2>
+        <div class="row mt-3 border border-secondary">
+          <div class="mb-1 px-5 py-3">
+            <label for="empid" class="form-label">Enter Employee Id</label>
+            <div class="input-group mb-3">
+              <input
+                type="number"
+                class="form-control"
+                min="1"
+                placeholder=""
+                id="empid"
+                aria-describedby="button-addon2"
+                required
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                onclick="getAttendenceDetails()"
+                id="button-addon2"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3 p-3">
+          <table class="table text-center">
+            <thead>
+              <th>Employee Id</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Clock In / Clock Out</th>
+              
+            </thead>
+            <tbody id="table_data"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!--Clock In  Modal -->
+    <div
+      class="modal fade"
+      id="clockinmodal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Clock In</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Date and Time : <span id="currentdatetimeCin"></span>
+          </div>
+          <div class="modal-footer" >
+            <form >
+              {% csrf_token %}
+              <span id="clockinid" style="display: none;"></span>
+              <button type="button" class="btn btn-success text-center" onclick="clockIn()">Clock In</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--Clock Out  Modal -->
+    <div
+      class="modal fade"
+      id="clockoutmodal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Clock Out</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Date and Time : <span id="currentdatetimeCout"></span>
+          </div>
+          <div class="modal-footer" >
+            <form>
+              {% csrf_token %}
+              <span id="clockoutid" style="display: none;"></span>
+              <button type="button" class="btn btn-danger text-center" onclick="clockOut()">Clock Out</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.getElementById("navattendence").classList.add("active");
+  </script>
+  <script>
+
+    async function makeattendence(data){
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+      const URL = "http://127.0.0.1:8000/makeattendence/";
+      const response = await fetch(URL, {
+        method: "POST",
+        headers:{
+          'Content-Type': 'application/json', 
+          'X-CSRFToken': csrfToken,
+        },
+        body:JSON.stringify(data),
+      });
+      const result = await response.json();
+      window.location.reload();
+    }
+
+    function setattendenceid(id){
+      document.getElementById('clockinid').innerHTML=id;
+      document.getElementById('clockoutid').innerHTML=id;
+    }
+
+    function clockIn(){
+      const data = {
+        "id" : parseInt(document.getElementById('clockinid').innerHTML),
+        "type":"clockin",
+      }
+      makeattendence(data);
+    }
+    
+    function clockOut(){
+      const data = {
+        "id" : parseInt(document.getElementById('clockoutid').innerHTML),
+        "type":"clockout",
+      }
+      makeattendence(data);
+    }
+
+    async function getAttendenceDetails() {
+      const empid = parseInt(document.getElementById("empid").value);
+      const URL = `http://127.0.0.1:8000/getAttendenceDetails/${empid}`;
+      const response = await fetch(URL, {
+        method: "GET",
+      });
+      const result = await response.json();
+      console.log(result);
+      if (result["error"]) {
+        alert("User does not Exists. Please enter a valid ID");
+        window.location.reload();
+      } else {
+        
+        var day=new Date().toLocaleDateString();
+        var clockinstr=`<td>
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#clockinmodal" onclick="setattendenceid(${result.id})">Clock In</button>
+                        </td>`;
+        var clockoutstr=`<td>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clockoutmodal" onclick="setattendenceid(${result.id})">Clock Out</button>
+          </td>`;
+        
+        console.log(result.attendance)
+        var atten = result.attendance
+        atten = atten.replace(/'/g, '"');
+        var attendance=JSON.parse(atten);
+        
+        if(attendance.length!=0){
+          if(attendance[0].clockout){
+            status=clockinstr;
+          }
+          else{
+            status=clockoutstr;
+
+          }
+        }
+        else{
+          status=clockinstr;
+        }
+
+        var empdetails = ` <tr>
+          <td>${result.id}</td>
+          <td>${result.name}</td>
+          <td>${day}</td>
+          ${status}
+          </tr>`;
+        document.getElementById("table_data").innerHTML = empdetails;
+        document.getElementById("currentdatetimeCin").innerText =new Date().toLocaleString();
+        document.getElementById("currentdatetimeCout").innerText =new Date().toLocaleString();
+      }
+    }
+  </script>
+</html>
