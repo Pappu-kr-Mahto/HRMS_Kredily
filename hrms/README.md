@@ -3,8 +3,9 @@
 
 1. Open  command prompt / vs terminal / terminal on the root folder.
     (root folder -  the main folder in which you placed the unzipped file 'hrms' say('projectKredily'))
-    go to
-    e.g:- E:\projectKredily
+
+    or create a folder say('projectKredily') then extract this zip file.
+    i>go to E:\projectKredily 
 
 2. E:\projectKredily\python -m venv django_env   -used to create a virtual environment
 
