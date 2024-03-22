@@ -28,7 +28,7 @@
 
 
 --------- Modal Schema ------------------
-    name = Full name of the employee
+    name =      Full name of the employee
     email= Email
     department= On Which department he/she works
     designation =  designation of the employee
