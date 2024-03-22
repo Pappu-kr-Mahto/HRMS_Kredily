@@ -21,7 +21,8 @@
     <script>
       async function moreDetails(id){
         console.log("more details")
-        const URL = `http://127.0.0.1:8000/employeedetails/${id}`;
+        const baseURL = window.location.origin;
+        const URL = `${baseURL}/employeedetails/${id}`;
         const response = await fetch(URL, {
           method: "GET",
         });
@@ -29,7 +30,8 @@
       }
 
       async function allEmployeeDetails() {
-        const URL = "http://127.0.0.1:8000/allEmployeeDetails/";
+        const baseURL = window.location.origin;
+        const URL = `${baseURL}/allEmployeeDetails/`;
         const response = await fetch(URL, {
           method: "GET",
         });

@@ -143,7 +143,8 @@
 
     async function makeattendence(data){
       const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-      const URL = "http://127.0.0.1:8000/makeattendence/";
+      const baseURL = window.location.origin;
+      const URL = `${baseURL}/makeattendence/`;
       const response = await fetch(URL, {
         method: "POST",
         headers:{
@@ -179,7 +180,8 @@
 
     async function getAttendenceDetails() {
       const empid = parseInt(document.getElementById("empid").value);
-      const URL = `http://127.0.0.1:8000/getAttendenceDetails/${empid}`;
+      const baseURL = window.location.origin;
+      const URL = `${baseURL}/getAttendenceDetails/${empid}`;
       const response = await fetch(URL, {
         method: "GET",
       });

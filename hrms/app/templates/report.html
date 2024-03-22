@@ -58,7 +58,8 @@
 
   <script>
     async function getReportData() {
-      const URL = "http://127.0.0.1:8000/getreportdata/";
+      const baseURL = window.location.origin;
+      const URL = `${baseURL}/getreportdata/`;
       const response = await fetch(URL, {
         method: "GET",
       });

@@ -66,7 +66,8 @@
 </script>
 <script>
   async function addEmployee(){
-     const URL = "http://127.0.0.1:8000/addemployee/"
+     const baseURL = window.location.origin;
+     const URL = `${baseURL}/addemployee/`
      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
      const data = {
       "name" : document.getElementById('name').value,
