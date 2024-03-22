@@ -73,8 +73,10 @@
   <script>
     async function  getEmployeeDetails(){
       const empid = parseInt(document.getElementById("empid").value);
+
       // const URL = `http://127.0.0.1:8000/getemployeedetails/${empid}`;
-      const URL = `https://hrms-kredily.onrender.com/getemployeedetails/${empid}`;
+      const baseURL = window.location.origin;
+      const URL = `${baseURL}/getemployeedetails/${empid}`;
       const response = await fetch(URL, {
         method: "GET",
       });
