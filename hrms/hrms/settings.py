@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-da+dxs*@5j9zl%8ol^-f8d_%!cjdjku_5za0im=2=v0^=fj1qg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000",'*']
+ALLOWED_HOSTS = ["127.0.0.1:8000","localhost:8000",'*',"https://hrms-kredily.onrender.com"]
 
 
 # Application definition
@@ -138,4 +138,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:8000",
+    "https://hrms-kredily.onrender.com",
 ]
