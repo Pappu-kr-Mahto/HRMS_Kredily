@@ -12,7 +12,7 @@ urlpatterns = [
 
 
 
-    path('getemployeedetails/<int:id>', views.getemployeedetails, name="getemployeedetails"),
+    path('getemployeedetails/', views.getemployeedetails, name="getemployeedetails"),
     path('addemployee/', views.addemployee, name="addemployee"),
     path('allEmployeeDetails/', views.allEmployeeDetails, name="allEmployeeDetails"),
     path('getAttendenceDetails/<int:id>', views.getemployeedetails, name="getAttendenceDetails"),

@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from datetime import datetime
 from django.http import JsonResponse
 from django.db.models import Count
+from django.db.models import Q
 
 import json
 
@@ -58,14 +59,17 @@ def allEmployeeDetails(request):
 
 
 @api_view(['GET'])
-def getemployeedetails(request,id):
+def getemployeedetails(request):
     ''' used to retrieve the record of a single particular employee'''
     try:
-        print(id)
-        emp_exists=Employee.objects.filter(id=id).exists()
+        searchUser =request.GET.get('user') 
+        print(searchUser)
+
+        emp_exists=Employee.objects.filter(Q(id__icontains=searchUser) |Q(name__istartswith=searchUser)).exists()
         if emp_exists:
             print("hello")
-            data = Employee.objects.filter(id = id).values().first()
+            data = Employee.objects.filter(Q(id__icontains=searchUser) |Q(name__istartswith=searchUser)).values()
+            print(data)
             return Response(data)
         else:
             return Response({"error":"User with given id does not exists."})

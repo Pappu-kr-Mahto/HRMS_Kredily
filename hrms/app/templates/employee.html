@@ -34,14 +34,14 @@
         </div>
         <div class="row mt-3 ">
             <div class="mb-1 px-5 py-3">
-              <label for="empid" class="form-label">Enter Employee ID</label>
+              <label for="empSearch" class="form-label">Enter Employee ID/Name</label>
               <div class="input-group mb-3">
                 <input
-                  type="number"
+                  type="text"
                   class="form-control"
                   min="1"
-                  placeholder=""
-                  id="empid"
+                  placeholder="enter id / name"
+                  id="empSearch"
                   aria-describedby="button-addon2"
                   required
                 />
@@ -56,7 +56,10 @@
               </div>
             </div>
         </div>
-        <div class="row mt-3" id="empbody">
+        <div class="row mt-3" >
+          <table class="table text-center" id="empbody">
+
+          </table>
         </div>
         <div class="row mt-3" >
             <table class="table table-light table-hover border border-secondary text-center" id="empattendance">
@@ -72,11 +75,11 @@
 
   <script>
     async function  getEmployeeDetails(){
-      const empid = parseInt(document.getElementById("empid").value);
+      const empSearch = document.getElementById("empSearch").value;
 
-      // const URL = `http://127.0.0.1:8000/getemployeedetails/${empid}`;
+      // const URL = `http://127.0.0.1:8000/getemployeedetails/${empSearch}`;
       const baseURL = window.location.origin;
-      const URL = `${baseURL}/getemployeedetails/${empid}`;
+      const URL = `${baseURL}/getemployeedetails?user=${empSearch}`;
       const response = await fetch(URL, {
         method: "GET",
       });
@@ -85,10 +88,10 @@
       
       if(result['error']){
         alert(result['error']);
+        window.location.reload();
       }
       else{
-        const empbody=`<table class="table text-center">
-            <thead>
+        const emphead=`<thead>
               <th>Emp.Id</th>
               <th>Name</th>
               <th>Email</th>
@@ -96,18 +99,23 @@
               <th>Designation</th>
               <th>Date of Joining</th>
               <th>Attendance</th>
-            </thead>
-            <tbody>
-               <td>${result.id}</td> 
-               <td>${result.name}</td> 
-               <td>${result.email}</td> 
-               <td>${result.department}</td> 
-               <td>${result.designation}</td> 
-               <td>${result.doj}</td> 
-               <td><button class="btn btn-outline-success" onclick="viewAttendance(${result.attendance})">View Attendance</button></td> 
-            </tbody>
-          </table>`
-          document.getElementById('empbody').innerHTML=empbody;
+            </thead>`;
+
+        var empbody="";
+            result.map((item)=>{
+              empbody+= `
+              <tr>
+               <td>${item.id}</td> 
+               <td>${item.name}</td> 
+               <td>${item.email}</td> 
+               <td>${item.department}</td> 
+               <td>${item.designation}</td> 
+               <td>${item.doj}</td> 
+               <td><button class="btn btn-outline-success" onclick="viewAttendance(${item.attendance})">View Attendance</button></td> 
+            </tr>`
+            })
+            
+          document.getElementById('empbody').innerHTML=emphead+empbody;
           document.getElementById('empattendance').innerHTML="";
       }
     }
