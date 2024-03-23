@@ -15,7 +15,7 @@ urlpatterns = [
     path('getemployeedetails/', views.getemployeedetails, name="getemployeedetails"),
     path('addemployee/', views.addemployee, name="addemployee"),
     path('allEmployeeDetails/', views.allEmployeeDetails, name="allEmployeeDetails"),
-    path('getAttendenceDetails/<int:id>', views.getemployeedetails, name="getAttendenceDetails"),
+    path('getAttendanceDetails/<int:id>', views.getAttendanceDetails, name="getAttendanceDetails"),
 
     path('makeattendence/', views.makeattendence, name="makeattendence"),
     path('getreportdata/', views.getreportdata, name="getreportdata"),

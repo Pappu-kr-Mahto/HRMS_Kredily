@@ -135,7 +135,7 @@
         </div>
       </div>
     </div>
-    
+
   </body>
   <script>
     document.getElementById("navattendence").classList.add("active");
@@ -182,7 +182,7 @@
     async function getAttendenceDetails() {
       const empid = parseInt(document.getElementById("empid").value);
       const baseURL = window.location.origin;
-      const URL = `${baseURL}/getAttendenceDetails/${empid}`;
+      const URL = `${baseURL}/getAttendanceDetails/${empid}`;
       const response = await fetch(URL, {
         method: "GET",
       });

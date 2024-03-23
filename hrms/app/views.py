@@ -101,6 +101,21 @@ def makeattendence(request):
     except Exception as e:
         return Response({"error" :"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET'])
+def getAttendanceDetails(request,id):
+    ''' used to retrieve the record of a single particular employee'''
+    try:
+        emp_exists=Employee.objects.filter(id=id).exists()
+        if emp_exists:
+            print("hello")
+            data = Employee.objects.filter(id=id).values().first()
+            print(data)
+            return Response(data)
+        else:
+            return Response({"error":"User with given id does not exists."})
+    except Exception as e:
+        return Response({"error":"Internal Server Error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def getreportdata(request):
