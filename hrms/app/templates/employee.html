@@ -129,8 +129,15 @@
             </thead>`
     var attenbody = ""
      attendance.map((item)=>{
-        let diff=timeDifference(item.clockin,item.clockout)
-        attenbody+= ` <tr><td> ${item.clockin}</td> <td>${item.clockout}</td><td>${diff}</td><tr>`  
+      var diff;
+      if('clockout' in item){
+        diff = diff=timeDifference(item.clockin,item.clockout)
+      }
+      else{
+        diff=="0 H 0 M";
+        item.clockout = " — — ";
+      }
+        attenbody+= `<tr><td> ${item.clockin}</td> <td>${item.clockout}</td><td>${diff}</td><tr>`  
      })
      if(attenbody == ""){
         attenbody = `<tr><td colspan="3"> No Records Available</td></tr>`
